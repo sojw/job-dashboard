@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="국내 IT 기업의 AI·백엔드 채용공고. 경력 15년차가 지원 가능한 공고만 모았다.">
+<style>
+/* 아티팩트는 플랫폼이 스켈레톤(viewport meta·리셋 CSS)을 씌워 주지만 GitHub Pages
+   에는 그런 것이 없다. 스켈레톤이 하던 일을 여기서 직접 한다. 빠뜨리면
+   모바일에서 데스크톱 폭(980px)으로 렌더된 뒤 축소되고, `[hidden]` 이 안 먹어
+   '더 보기' 버튼이 계속 보인다 — 실제로 첫 배포가 그랬다. */
+*,::before,::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+:root{
+  color-scheme:light dark;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+body{margin:0}
+img,video{max-width:100%;height:auto}
+/* el.hidden 으로 여닫는 곳이 있다. `#load{display:block}` 같은 id 선택자가
+   UA 스타일시트의 `[hidden]{display:none}` 을 이기므로 !important 가 필요하다. */
+[hidden]{display:none!important}
+</style>
+<!-- artifact:head -->
+<title>Doom Job Research</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#eef2f4; --surface:#fff; --surface-2:#e6ecef; --border:#d2dce1;
+  --text:#132029; --muted:#586a76; --faint:#8798a4;
+  --ai:#8f4708; --ai-bg:#f9efe2; --ai-line:#dcb98c;
+  --be:#0a635c; --be-bg:#e0efed; --be-line:#8dc2bc;
+  --accent:#0a635c; --ring:#17788d;
+  --sans:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1720; --surface:#15212b; --surface-2:#1c2a35; --border:#293a47;
+  --text:#e1e9ef; --muted:#93a5b2; --faint:#6b808e;
+  --ai:#e5ab62; --ai-bg:#2f2210; --ai-line:#6b4d21;
+  --be:#63c9bd; --be-bg:#0b2a28; --be-line:#1f5b56;
+  --accent:#63c9bd; --ring:#4fb6cf;
+}}
+:root[data-theme="dark"]{
+  --bg:#0e1720; --surface:#15212b; --surface-2:#1c2a35; --border:#293a47;
+  --text:#e1e9ef; --muted:#93a5b2; --faint:#6b808e;
+  --ai:#e5ab62; --ai-bg:#2f2210; --ai-line:#6b4d21;
+  --be:#63c9bd; --be-bg:#0b2a28; --be-line:#1f5b56;
+  --accent:#63c9bd; --ring:#4fb6cf;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px;line-height:1.55;
+  padding-inline:16px;padding-block:0;margin:0}
+.wrap{max-width:1000px;margin:0 auto}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ring);outline-offset:2px;border-radius:3px}
+
+header.top{padding-block:30px 18px}
+h1{font-size:clamp(23px,4.4vw,31px);font-weight:700;letter-spacing:-.02em;margin:0 0 6px;text-wrap:balance}
+.sub{color:var(--muted);font-size:13.5px;margin:0}
+.sub strong{color:var(--text)}
+.sub code,footer code{font-family:var(--mono);font-size:12.5px;background:var(--surface-2);padding:1px 5px;border-radius:3px}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:22px}
+.stat{background:var(--surface);padding:13px 15px}
+.stat .n{font-family:var(--mono);font-size:24px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.15}
+.stat .k{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);margin-top:3px}
+.stat.ai .n{color:var(--ai)} .stat.be .n{color:var(--be)}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,1fr)}}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);
+  padding-block:10px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.bar .line{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bar .line + .line{margin-top:8px}
+#q{flex:1 1 220px;min-width:0;font:inherit;font-size:14px;padding:8px 11px;color:var(--text);
+  background:var(--surface);border:1px solid var(--border);border-radius:6px}
+#q::placeholder{color:var(--faint)}
+.seg{display:inline-flex;background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.seg button{font:inherit;font-size:13px;padding:7px 13px;background:none;border:0;color:var(--muted);cursor:pointer}
+.seg button+button{border-left:1px solid var(--border)}
+.seg button[aria-pressed="true"]{background:var(--surface-2);color:var(--text);font-weight:600}
+.chip{font:inherit;font-size:12.5px;font-family:var(--mono);padding:6px 10px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--border);border-radius:99px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--text);color:var(--surface);border-color:var(--text)}
+.lab{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-right:2px}
+.count{margin-left:auto;font-family:var(--mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* 회사 선택 패널 — 253곳이라 목록 자체에도 검색이 필요하다. 기본은 접어 둔다. */
+details.picker{border:1px solid var(--border);border-radius:6px;background:var(--surface);
+  flex:1 1 100%;min-width:0}
+details.picker > summary{cursor:pointer;padding:7px 11px;font-size:13px;color:var(--muted);
+  display:flex;align-items:center;gap:8px;list-style:none}
+details.picker > summary::-webkit-details-marker{display:none}
+details.picker > summary::before{content:"▸";font-family:var(--mono);color:var(--faint)}
+details.picker[open] > summary::before{content:"▾"}
+details.picker > summary b{color:var(--text);font-weight:600}
+.picker .pk{padding:0 11px 11px;border-top:1px solid var(--border);margin-top:2px}
+.picker .pkbar{display:flex;gap:7px;align-items:center;padding-top:9px;flex-wrap:wrap}
+#cq{flex:1 1 160px;min-width:0;font:inherit;font-size:13px;padding:6px 9px;color:var(--text);
+  background:var(--bg);border:1px solid var(--border);border-radius:5px}
+.picker .act{font:inherit;font-family:var(--mono);font-size:11.5px;background:none;border:0;padding:0;
+  color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+/* sticky 바 안에 있으므로 높이를 화면 비율로 묶는다. 안 묶으면 패널을 펼친 순간
+   바가 화면 대부분을 덮어 결과가 안 보인다. */
+.colist{margin-top:9px;max-height:min(264px,38vh);overflow-y:auto;display:grid;gap:1px 14px;
+  grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.picked{max-height:min(84px,14vh);overflow-y:auto}
+.colist label{display:flex;align-items:baseline;gap:7px;font-size:13px;padding:3px 2px;
+  cursor:pointer;border-radius:4px}
+.colist label:hover{background:var(--surface-2)}
+.colist input{margin:0;accent-color:var(--accent);flex:none;position:relative;top:2px}
+.colist .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.colist .ct{font-family:var(--mono);font-size:11.5px;color:var(--faint);font-variant-numeric:tabular-nums}
+.colist label.off{opacity:.42}
+.colist p{grid-column:1/-1;margin:8px 2px;color:var(--muted);font-size:13px}
+.picked:not(:empty){display:flex;gap:6px;flex-wrap:wrap;padding-top:9px}
+.picked button{font:inherit;font-size:12px;padding:3px 9px;cursor:pointer;background:var(--text);
+  color:var(--surface);border:1px solid var(--text);border-radius:99px}
+.picked button::after{content:" ✕";font-family:var(--mono);font-size:10px;opacity:.65}
+
+.co{margin-top:26px}
+.co > h2{display:flex;align-items:baseline;gap:9px;font-size:17px;font-weight:600;margin:0 0 9px;
+  padding-bottom:7px;border-bottom:1px solid var(--border);letter-spacing:-.01em}
+.co > h2 .n{font-family:var(--mono);font-size:12px;color:var(--faint);font-weight:400}
+.job{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:12px 14px}
+.jobs{display:flex;flex-direction:column;gap:7px}
+.job h3{font-size:14.5px;font-weight:500;margin:0;line-height:1.4}
+.job h3 a{text-decoration:none;border-bottom:1px solid transparent}
+.job h3 a:hover{border-bottom-color:currentColor}
+.meta{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:7px;
+  font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.tag{padding:2px 7px;border-radius:99px;border:1px solid;font-weight:500}
+.tag.AI{color:var(--ai);background:var(--ai-bg);border-color:var(--ai-line)}
+.tag.BE{color:var(--be);background:var(--be-bg);border-color:var(--be-line)}
+.dot{color:var(--faint)}
+.more{font:inherit;font-family:var(--mono);font-size:11.5px;background:none;border:0;padding:0;
+  color:var(--accent);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.body{margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)}
+.body section + section{margin-top:9px}
+.body h4{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:0 0 4px;font-weight:600}
+.body ul{margin:0;padding-left:17px}
+.body li{font-size:13.5px;color:var(--muted);margin-bottom:2px}
+.warn{font-family:var(--mono);font-size:11.5px;color:var(--ai);margin-top:8px}
+
+#load{display:block;width:100%;margin:26px 0 8px;font:inherit;font-size:14px;padding:11px;cursor:pointer;
+  background:var(--surface);border:1px solid var(--border);border-radius:7px;color:var(--text)}
+.empty{padding:50px 0;text-align:center;color:var(--muted)}
+footer{padding-block:34px 26px;color:var(--faint);font-size:12.5px;border-top:1px solid var(--border);margin-top:34px}
+footer p{margin:0 0 5px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<!-- /artifact:head -->
+</head>
+<body>
+<!-- artifact:body -->
+
+<div class="wrap">
+<header class="top">
+  <h1>Doom Job Research</h1>
+  <p class="sub">원티드 · 그리팅 · Greenhouse · 네이버 · 카카오 · 토스 · 오늘의집 · 현대차그룹 에서 수집 · <code id="gen">—</code> 기준 · <strong>경력 15년 지원 가능</strong> 공고만 · 요약은 공고 원문 발췌</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="n" id="n-all">—</div><div class="k">공고</div></div>
+  <div class="stat"><div class="n" id="n-co">—</div><div class="k">회사</div></div>
+  <div class="stat ai"><div class="n" id="n-ai">—</div><div class="k">AI</div></div>
+  <div class="stat be"><div class="n" id="n-be">—</div><div class="k">백엔드</div></div>
+</div>
+
+<div class="bar">
+  <div class="line">
+    <input id="q" type="search" placeholder="회사명 · 직무명 검색" autocomplete="off">
+    <div class="seg" id="cat" role="group" aria-label="분류">
+      <button type="button" data-v="" aria-pressed="true">전체</button>
+      <button type="button" data-v="AI" aria-pressed="false">AI</button>
+      <button type="button" data-v="백엔드" aria-pressed="false">백엔드</button>
+    </div>
+  </div>
+  <div class="line">
+    <span class="lab">하한</span>
+    <button type="button" class="chip" id="y-1" data-y="1" aria-pressed="false">1~3년</button>
+    <button type="button" class="chip" id="y-2" data-y="4" aria-pressed="false">4~7년</button>
+    <button type="button" class="chip" id="y-3" data-y="8" aria-pressed="false">8년+</button>
+    <button type="button" class="chip" id="y-4" data-y="none" aria-pressed="false">미상</button>
+    <span class="lab" style="margin-left:8px">소스</span>
+    <button type="button" class="chip" id="s-w" data-s="wanted" aria-pressed="false">원티드</button>
+    <button type="button" class="chip" id="s-g" data-s="greeting" aria-pressed="false">그리팅</button>
+    <button type="button" class="chip" id="s-h" data-s="greenhouse" aria-pressed="false">Greenhouse</button>
+    <button type="button" class="chip" id="s-n" data-s="navercorp" aria-pressed="false">네이버</button>
+    <button type="button" class="chip" id="s-k" data-s="kakao" aria-pressed="false">카카오</button>
+    <button type="button" class="chip" id="s-t" data-s="toss" aria-pressed="false">토스</button>
+    <button type="button" class="chip" id="s-b" data-s="bucketplace" aria-pressed="false">오늘의집</button>
+    <button type="button" class="chip" id="s-hy" data-s="hyundai" aria-pressed="false">현대차</button>
+    <button type="button" class="chip" id="s-ki" data-s="kia" aria-pressed="false">기아</button>
+    <span class="count" id="count"></span>
+  </div>
+  <div class="line">
+    <details class="picker" id="picker">
+      <summary>회사 선택 <b id="pklabel">전체</b></summary>
+      <div class="pk">
+        <div class="pkbar">
+          <input id="cq" type="search" placeholder="회사명으로 목록 좁히기" autocomplete="off">
+          <button type="button" class="act" id="pkclear">선택 해제</button>
+          <button type="button" class="act" id="pkall">보이는 회사 전체 선택</button>
+        </div>
+        <div class="picked" id="picked"></div>
+        <div class="colist" id="colist"></div>
+      </div>
+    </details>
+  </div>
+</div>
+
+<main id="out"></main>
+<button type="button" id="load" hidden>더 보기</button>
+
+<footer>
+  <p><strong>경력 15년차가 지원 가능한 공고만</strong> 남겼다. 요건 상한이 15년보다 낮으면(<code>3~8년</code>, <code>5~12년</code>) 뺐다. 경력을 아예 주지 않는 소스(Greenhouse·토스 일부)의 공고는 판단할 수 없어 <strong>남기고</strong> <code>미상</code>으로 표시했다.</p>
+  <p>제외한 분야: <strong>ML/머신러닝/딥러닝 · 컴퓨터비전 · 추천시스템</strong> · LLM · NLP · 데이터 사이언스 · MLOps · 데이터 엔지니어 · <strong>보안/정보보안/취약점</strong> · SRE/인프라/DevOps · DBA · 풀스택 · 블록체인 · 프론트엔드 · iOS/Android · QA · 게임 클라이언트 · 임베디드 · 하드웨어/기구/광학/회로. <code>AI</code> 는 모델링·연구 트랙을 뺀 <strong>응용·엔지니어링</strong>만 남았다.</p>
+  <p>제외한 고용형태: 인턴 · 전문연구요원 · 신입/Junior · 계약직/기간제/파견.</p>
+  <p>같은 공고가 여러 소스에 올라온 경우 회사가 직접 올린 쪽을 남겼다.</p>
+  <p>넥슨은 수집하지 않는다 — <code>careers.nexon.com</code> 의 robots.txt 가 공고 목록 경로를 막고 Cloudflare 챌린지가 걸려 있다. 잡코리아도 같은 이유로 뺐다.</p>
+</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // 데이터는 두 경로로 온다.
+  //   GitHub Pages: 같은 폴더의 data.json 을 받는다(배포 스크립트가 같이 올린다).
+  //   단일 파일 빌드: <script id="data"> 에 박혀 있다(아티팩트·오프라인용).
+  // 아티팩트는 CSP 가 fetch 를 막으므로 후자가 필요하다.
+  var embedded = document.getElementById("data");
+  if(embedded){
+    start(JSON.parse(embedded.textContent));
+  } else {
+    fetch("data.json", {cache:"no-store"})
+      .then(function(r){ if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(start)
+      .catch(function(err){
+        document.getElementById("out").innerHTML =
+          '<p class="empty">data.json 을 불러오지 못했습니다 (' + esc(String(err.message)) + ').<br>'
+          + 'publish_dashboard.sh 가 data.json 을 함께 올렸는지 확인하세요.</p>';
+      });
+  }
+
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+  function start(payload){
+  var ROWS = payload.postings || payload;
+  var meta = payload.meta || {};
+  var fmt = function(n){ return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ","); };
+  document.getElementById("gen").textContent = meta.generated_at || "—";
+  document.getElementById("n-all").textContent = fmt(ROWS.length);
+  document.getElementById("n-co").textContent = fmt(new Set(ROWS.map(function(r){return r.c;})).size);
+  document.getElementById("n-ai").textContent = fmt(ROWS.filter(function(r){return r.k==="AI";}).length);
+  document.getElementById("n-be").textContent = fmt(ROWS.filter(function(r){return r.k!=="AI";}).length);
+  var out = document.getElementById("out"), loadBtn = document.getElementById("load");
+  var countEl = document.getElementById("count"), qEl = document.getElementById("q");
+  var PAGE = 30, shown = 0, groups = [];
+  var state = {q:"", cat:"", years:{}, srcs:{}, cos:{}};
+
+  // 경력 문자열에서 최소 연차를 뽑는다. "신입"·"경력무관" -> 0, "3~8년" -> 3, "8년+" -> 8.
+  function minYears(y){
+    if(!y) return 0;
+    if(y.indexOf("신입")>-1 || y.indexOf("무관")>-1) return 0;
+    var m = y.match(/(\d+)/);
+    return m ? parseInt(m[1],10) : 0;
+  }
+  // 경력 요건의 **하한**으로 묶는다. 상한은 이미 15년 조건으로 걸러져 있다.
+  function bucket(y){
+    if(!y) return "none";
+    var n = minYears(y);
+    if(n<=3) return "1";
+    if(n<=7) return "4";
+    return "8";
+  }
+  ROWS.forEach(function(r){ r._b = bucket(r.y); r._q = (r.c+" "+r.t).toLowerCase(); });
+
+  function activeKeys(obj){ return Object.keys(obj).filter(function(k){return obj[k];}); }
+
+  // 회사 조건을 뺀 나머지 필터. 회사 목록의 건수를 이 기준으로 세야 "지금 조건에서
+  // 이 회사에 몇 건" 이 나온다. 회사 선택까지 반영하면 고른 회사만 1 이상이 되어 쓸모없다.
+  function matchesExceptCompany(r){
+    var ys = activeKeys(state.years), ss = activeKeys(state.srcs), q = state.q;
+    if(state.cat && r.k !== state.cat) return false;
+    if(ys.length && ys.indexOf(r._b) < 0) return false;
+    if(ss.length && ss.indexOf(r.s) < 0) return false;
+    if(q && r._q.indexOf(q) < 0) return false;
+    return true;
+  }
+
+  function filtered(){
+    var cs = activeKeys(state.cos);
+    return ROWS.filter(function(r){
+      if(!matchesExceptCompany(r)) return false;
+      if(cs.length && !state.cos[r.c]) return false;
+      return true;
+    });
+  }
+
+  function group(list){
+    var map = new Map();
+    list.forEach(function(r){
+      if(!map.has(r.c)) map.set(r.c, []);
+      map.get(r.c).push(r);
+    });
+    var arr = [];
+    map.forEach(function(v,k){ arr.push([k,v]); });
+    // 공고 많은 회사 먼저, 같으면 이름순. 어디를 먼저 볼지가 곧 순서다.
+    arr.sort(function(a,b){ return b[1].length - a[1].length || a[0].localeCompare(b[0],"ko"); });
+    return arr;
+  }
+
+  var SRC_LABEL = {wanted:"원티드", greeting:"그리팅", greenhouse:"Greenhouse",
+                   navercorp:"네이버", kakao:"카카오", toss:"토스", bucketplace:"오늘의집",
+                   hyundai:"현대차", kia:"기아"};
+
+  function bullets(title, items){
+    if(!items || !items.length) return "";
+    return "<section><h4>"+title+"</h4><ul>"+items.map(function(x){
+      return "<li>"+esc(x)+"</li>"; }).join("")+"</ul></section>";
+  }
+
+  function jobHTML(r, id){
+    var tagCls = r.k === "AI" ? "AI" : "BE";
+    var meta = ['<span class="tag '+tagCls+'">'+esc(r.k)+"</span>"];
+    if(r.y) meta.push("<span>"+esc(r.y)+"</span>");
+    if(r.l) meta.push('<span class="dot">·</span><span>'+esc(r.l)+"</span>");
+    meta.push('<span class="dot">·</span><span>'+esc(SRC_LABEL[r.s]||r.s)+"</span>");
+    var has = (r.m&&r.m.length)||(r.r&&r.r.length)||(r.p&&r.p.length);
+    if(has) meta.push('<button type="button" class="more" data-id="'+id+'" aria-expanded="false">상세</button>');
+    var body = has ? '<div class="body" id="b'+id+'" hidden>'
+      + bullets("주요업무", r.m) + bullets("자격요건", r.r) + bullets("우대사항", r.p)
+      + (r.n ? '<p class="warn">! '+esc(r.n)+"</p>" : "") + "</div>" : "";
+    return '<article class="job"><h3><a href="'+esc(r.u)+'" target="_blank" rel="noopener">'
+      + esc(r.t) + "</a></h3>" + '<div class="meta">' + meta.join("") + "</div>" + body + "</article>";
+  }
+
+  var seq = 0;
+  function renderSlice(){
+    var slice = groups.slice(shown, shown + PAGE);
+    var frag = document.createElement("div");
+    frag.innerHTML = slice.map(function(g){
+      return '<section class="co"><h2>'+esc(g[0])+' <span class="n">'+g[1].length+"건</span></h2>"
+        + '<div class="jobs">' + g[1].map(function(r){ return jobHTML(r, ++seq); }).join("") + "</div></section>";
+    }).join("");
+    while(frag.firstChild) out.appendChild(frag.firstChild);
+    shown += slice.length;
+    loadBtn.hidden = shown >= groups.length;
+    loadBtn.textContent = "더 보기 (" + (groups.length - shown) + "개 회사 남음)";
+  }
+
+  function render(){
+    var list = filtered();
+    groups = group(list);
+    out.textContent = "";
+    shown = 0; seq = 0;
+    countEl.textContent = list.length + "건 / " + groups.length + "개 회사";
+    renderPicker();
+    if(!list.length){
+      out.innerHTML = '<p class="empty">조건에 맞는 공고가 없습니다. 검색어나 필터를 바꿔 보세요.</p>';
+      loadBtn.hidden = true;
+      return;
+    }
+    renderSlice();
+    save();
+  }
+
+  var colist = document.getElementById("colist"), picked = document.getElementById("picked");
+  var pklabel = document.getElementById("pklabel"), cq = document.getElementById("cq");
+  var coFilter = "";
+
+  function companyCounts(){
+    var m = Object.create(null);
+    ROWS.forEach(function(r){ if(matchesExceptCompany(r)) m[r.c] = (m[r.c]||0) + 1; });
+    // 고른 회사는 현재 조건에서 0건이어도 목록에 남긴다. 사라지면 해제할 방법이 없다.
+    Object.keys(state.cos).forEach(function(c){ if(state.cos[c] && !(c in m)) m[c] = 0; });
+    return m;
+  }
+
+  function renderPicker(){
+    var counts = companyCounts();
+    var names = Object.keys(counts).sort(function(a,b){
+      return counts[b] - counts[a] || a.localeCompare(b,"ko"); });
+    var needle = coFilter;
+    var visible = needle ? names.filter(function(n){ return n.toLowerCase().indexOf(needle) > -1; })
+                         : names;
+
+    colist.innerHTML = visible.length
+      ? visible.map(function(n){
+          var on = !!state.cos[n], c = counts[n];
+          return '<label class="' + (c ? "" : "off") + '">'
+            + '<input type="checkbox" data-co="' + esc(n) + '"' + (on ? " checked" : "") + ">"
+            + '<span class="nm">' + esc(n) + "</span>"
+            + '<span class="ct">' + c + "</span></label>";
+        }).join("")
+      : "<p>그런 이름의 회사가 없습니다.</p>";
+
+    var chosen = activeKeys(state.cos);
+    picked.innerHTML = chosen.length
+      ? chosen.sort(function(a,b){ return a.localeCompare(b,"ko"); }).map(function(n){
+          return '<button type="button" data-drop="' + esc(n) + '">' + esc(n) + "</button>";
+        }).join("")
+      : "";
+    pklabel.textContent = chosen.length
+      ? chosen.length + "곳 선택"
+      : "전체 " + names.length + "곳";
+  }
+
+  colist.addEventListener("change", function(e){
+    var box = e.target.closest("input[data-co]");
+    if(!box) return;
+    if(box.checked) state.cos[box.dataset.co] = true;
+    else delete state.cos[box.dataset.co];
+    render();
+  });
+
+  picked.addEventListener("click", function(e){
+    var btn = e.target.closest("button[data-drop]");
+    if(!btn) return;
+    delete state.cos[btn.dataset.drop];
+    render();
+  });
+
+  document.getElementById("pkclear").addEventListener("click", function(){
+    state.cos = {};
+    render();
+  });
+
+  document.getElementById("pkall").addEventListener("click", function(){
+    [].forEach.call(colist.querySelectorAll("input[data-co]"), function(box){
+      state.cos[box.dataset.co] = true; });
+    render();
+  });
+
+  var coTimer;
+  cq.addEventListener("input", function(){
+    clearTimeout(coTimer);
+    coTimer = setTimeout(function(){
+      coFilter = cq.value.trim().toLowerCase();
+      renderPicker();
+    }, 140);
+  });
+
+  out.addEventListener("click", function(e){
+    var btn = e.target.closest(".more");
+    if(!btn) return;
+    var body = document.getElementById("b" + btn.dataset.id);
+    if(!body) return;
+    var open = !body.hidden;
+    body.hidden = open;
+    btn.setAttribute("aria-expanded", String(!open));
+    btn.textContent = open ? "상세" : "닫기";
+  });
+
+  loadBtn.addEventListener("click", renderSlice);
+
+  var timer;
+  qEl.addEventListener("input", function(){
+    clearTimeout(timer);
+    timer = setTimeout(function(){ state.q = qEl.value.trim().toLowerCase(); render(); }, 160);
+  });
+
+  document.getElementById("cat").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if(!b) return;
+    [].forEach.call(this.querySelectorAll("button"), function(x){
+      x.setAttribute("aria-pressed", String(x === b)); });
+    state.cat = b.dataset.v; render();
+  });
+
+  [].forEach.call(document.querySelectorAll(".chip"), function(c){
+    c.addEventListener("click", function(){
+      var on = c.getAttribute("aria-pressed") !== "true";
+      c.setAttribute("aria-pressed", String(on));
+      if(c.dataset.y) state.years[c.dataset.y] = on;
+      if(c.dataset.s) state.srcs[c.dataset.s] = on;
+      render();
+    });
+  });
+
+  // 필터는 이 브라우저에만 남는다. 차단된 환경에서도 페이지는 그냥 떠야 한다.
+  function save(){
+    try{ localStorage.setItem("jobboard.v1", JSON.stringify(state)); }catch(e){}
+  }
+  function restore(){
+    try{
+      var raw = localStorage.getItem("jobboard.v1");
+      if(!raw) return;
+      var s = JSON.parse(raw);
+      if(!s || typeof s !== "object") return;
+      state.q = typeof s.q === "string" ? s.q : "";
+      state.cat = s.cat === "AI" || s.cat === "백엔드" ? s.cat : "";
+      state.years = s.years && typeof s.years === "object" ? s.years : {};
+      state.srcs = s.srcs && typeof s.srcs === "object" ? s.srcs : {};
+      // 저장된 회사명이 이번 데이터에 없을 수 있다(공고가 마감된 회사). 걸러 낸다.
+      state.cos = {};
+      if(s.cos && typeof s.cos === "object"){
+        var live = Object.create(null);
+        ROWS.forEach(function(r){ live[r.c] = 1; });
+        Object.keys(s.cos).forEach(function(n){ if(s.cos[n] && live[n]) state.cos[n] = true; });
+      }
+      if(Object.keys(state.cos).length) document.getElementById("picker").open = true;
+      qEl.value = state.q;
+      [].forEach.call(document.querySelectorAll("#cat button"), function(b){
+        b.setAttribute("aria-pressed", String(b.dataset.v === state.cat)); });
+      [].forEach.call(document.querySelectorAll(".chip"), function(c){
+        var on = c.dataset.y ? !!state.years[c.dataset.y] : !!state.srcs[c.dataset.s];
+        c.setAttribute("aria-pressed", String(on)); });
+    }catch(e){}
+  }
+
+  restore();
+  render();
+  }
+})();
+</script>
+<!-- /artifact:body -->
+</body>
+</html>
